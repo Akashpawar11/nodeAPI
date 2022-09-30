@@ -5,16 +5,21 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ajv": "^8.11.0",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.1",
+    "fluent-json-schema": "^3.1.0",
+    "jsonschema": "^1.4.1",
     "mysql": "^2.18.1",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "yup": "^0.32.11"
   }
 }
