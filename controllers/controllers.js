@@ -1,7 +1,9 @@
 var connection = require('./connection.js')
 var queries = require('../queries/queries.js');
-var S = require('fluent-json-schema')
+// var S = require('fluent-json-schema')
 // var ajv = require('../middleware/ajvschema')
+var { validate } = require('jsonschema');
+const { send } = require('process');
 
 var db = connection.database
 connection.database.connect()
@@ -9,7 +11,7 @@ connection.database.connect()
 exports.users = (req, res) => {
     db.query(queries.view_all, (error, results) => {
         if (error) throw error;
-        return res.send({ data: results, message: 'users list.' })
+        return res.send({ results, message: 'users list.' })
     })
 };
 
@@ -30,39 +32,48 @@ exports.post_user = (req, res) => {
     let email = req.body.email;
     let contact = req.body.contact;
     let role = req.body.role;
-    
-    var ajv = require('ajv');
-    var AJV = new ajv();
-    var userSchema = {
-        type: "object",
-        properties: {
-            id: { type: "number" },
-            name: { type: "string" },
-            email: { type: "string" ,pattern: "^\\S+@\\S+\\.\\S+$",},
-            contact: { type: "number", minLength: 10 },
-            role: { type: "string" },
-        },
-        required: ["id", "name", "email", "contact", "role"],
-    };
 
-    const userData = req.body;
-    const isDataValid = AJV.validate(userSchema, userData);
-    console.log(isDataValid)
 
-    
-    if (isDataValid) {
+
+    // require the book schema (a JSON file that we generated on jsonschema.net)
+    const userS = require('../middleware/schema.js');
+    const userSchema = userS.a
+
+    // var ajv = require('ajv');
+    // var AJV = new ajv();
+    // var userSchema = {
+    //     type: "object",
+    //     properties: {
+    //         id: { type: "number" },
+    //         name: { type: "string" },
+    //         email: { type: "string" ,pattern: "^\\S+@\\S+\\.\\S+$",},
+    //         contact: { type: "number", minLength: 10 },
+    //         role: { type: "string" },
+    //     },
+    //     required: ["id", "name", "email", "contact", "role"],
+    // };
+
+    // const userData = req.body;
+    // const isDataValid = AJV.validate(userSchema, userData);
+    // console.log(isDataValid)
+
+    const result = validate(req.body, userSchema);
+    console.log('data is - ', result)
+
+    if (result.valid) {
         db.query(queries.post_user, [id, name, email, contact, role], (error, results) => {
             if (error) {
-                throw error;
+                res.send(error)
             }
-            return res.send({ data: results, message: 'New user has been created successfully!!!' });
+            else {
+                res.send({ results, message: 'New user has been created successfully!!!' });
+                console.log("Userdata data is valid!");
+            }
         });
-        console.log("Userdata data is valid!");
-      } else {
-        console.error("Userdata is invalid:", AJV.errors);
-        res.send({ data: AJV.errors, message: 'Error occured' })
-      }
-    
+    } else {
+        console.error("Userdata is invalid");
+    }
+
 }
 
 exports.update_user = (req, res) => {
