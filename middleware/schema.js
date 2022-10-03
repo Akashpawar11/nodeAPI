@@ -1,8 +1,7 @@
-module.exports.a = 
-{
+module.exports.userSchema = {
     "$schema": "https://json-schema.org/draft/2019-09/schema",
     "$id": "http://example.com/example.json",
-    "type": "object",
+    "type": "arrays",
     "default": {},
     "title": "Root Schema",
     "required": [
@@ -12,84 +11,36 @@ module.exports.a =
         "contact",
         "role"
     ],
-    "properties": {
-        "data": {
-            "type": "array",
-            "default": [],
-            "title": "The data Schema",
-            "items": {
-                "type": "array",
-                "default": {},
-                "title": "A Schema",
-                "required": [
-                    "id",
-                    "name",
-                    "email",
-                    "contact",
-                    "role"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "default": 0,
-                        "title": "The id Schema",
-                        "examples": [
-                            1
-                        ]
-                    },
-                    "name": {
-                        "type": "string",
-                        "default": "",
-                        "title": "The name Schema",
-                        "examples": [
-                            "A green door"
-                        ]
-                    },
-                    "email": {
-                        "description": "Email of the user",
-                        "type": "string",
-                        "format": "email"
-                    },
-                    "contact": {
-                        "type": "number",
-                        "default": 0,
-                        "title": "The contact Schema",
-                        "minLength": 10,
-                        "maxLength": 15,
-                        "examples": [
-                            2345673452
-                        ]
-                    },
-                    "role": {
-                        "type": "string",
-                        "default": "",
-                        "title": "The role Schema",
-                        "examples": [
-                            "md"
-                        ]
-                    }
-                },
-                "examples": [
-                    {
-                        "id": 1,
-                        "name": "A green door",
-                        "email": "greendoor@gmail.com",
-                        "contact": 2345673452,
-                        "role": "md"
-                    }
-                ]
-            },
-            "examples": [
-                [
-                    {
-                        "id": 1,
-                        "name": "A green door",
-                        "email": "greendoor@gmail.com",
-                        "contact": 2345673452,
-                        "role": "md"
-                    }
-                ]
-            ]
+    "properties":
+    {
+        "id": {
+            "type": "integer",
+            "default": 0,
+            "title": "The id Schema"
+        },
+        "name": {
+            "type": "string",
+            "default": "",
+            "title": "The name Schema"
+        },
+        "email": {
+            "description": "Email of the user",
+            "type": "string",
+            "format": "email",
+            "minLength": 7,
+            "maxLength": 127,
+        },
+        "contact": {
+            "type": "number",
+            "title": "The contact Schema",
+            "minimum": 1111111111,
+            "maximum": 999999999999,
+            
+        },
+        "role": {
+            "type": "string",
+            "default": "",
+            "title": "The role Schema",
         }
     }
 }

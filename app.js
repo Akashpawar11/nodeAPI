@@ -18,6 +18,7 @@ app.get('/user/:id', require('./routes/routes.js'));
 app.post('/user', require('./routes/routes.js'));
 app.put('/user', require('./routes/routes.js'));
 app.delete('/user/:id', require('./routes/routes.js'));
+app.delete('/users', require('./routes/routes.js'));
 
 require('dotenv').config
 const PORT = process.env.port || 3000
