@@ -1,6 +1,6 @@
-var connection = require('./connection.js');
-var queries = require('../queries/queries.js');
-var { validate } = require('jsonschema');
+const connection = require('./connection.js');
+const queries = require('../queries/queries.js');
+const { validate } = require('jsonschema');
 var _ = require('underscore');
 
 var db = connection.database;
@@ -11,42 +11,40 @@ exports.home = (req, res) => {
     return res.send(homeContent)
 };
 
-
 exports.users = async (req, res) => {
-    try {
-        db.query(queries.view_all, async (error, results) => {
-            try {
-                await res.send({ data: results, message: 'users list' });
-            }
-            catch (error) {
-                await res.status(400).send(error);
+    return new Promise((resolve, reject) => {
+        db.query(queries.view_all, (error, results) => {
+            if (error) {
+                reject(res.status(400).send(error))
+            } else if (error == null) {
+                resolve(res.send({ data: results, message: 'users list' }))
             }
         })
-    } catch (error) {
-        console.log(error)
-    }
+    }).catch(() => {
+        console.log("Error occured")
+    })
 }
 
 exports.single_user = async (req, res) => {
-    try {
+    new Promise((resolve, reject) => {
         let user_id = req.params.id;
-        db.query(queries.view_particular, user_id, async (error, results) => {
-            try {
-                await res.send({ data: results[0] });
-            } catch {
-                await res.send("error occured")
+        db.query(queries.view_particular, user_id, (error, results) => {
+            if (error) {
+                reject(res.send(error))
+            } else if (error == null) {
+                resolve(res.send({ data: results }))
             }
-        });
-    } catch (Error) {
-        res.send(Error)
-    }
+        })
+    }).catch(() => {
+        console.log("")
+    })
 }
 
 var message = (msg) => {
     return msg.property + '-' + msg.instance + '-' + msg.message
-};
+}
 
-exports.post_user = async (req, res) => {
+exports.post_user = (req, res) => {
     let id = req.body.id;
     let name = req.body.name;
     let email = req.body.email;
@@ -61,18 +59,17 @@ exports.post_user = async (req, res) => {
         res.status(400).send({ Errors: newArr });
     }
     else {
-        db.query(queries.post_user, [id, name, email, contact, role], async (error, results) => {
-            if (error) {
-                console.log(error)
-                await res.status(400).send({ error: "User with same ID or data exists" })
-            } else {
-                try {
-                    await res.send({ message: 'New user created successfully!!!' });
-                } catch (error) {
-                    await res.status(400).send(error);
+        new Promise((resolve, reject) => {
+            db.query(queries.post_user, [id, name, email, contact, role], (error, results) => {
+                if (error.errno == 1062) {
+                    reject(res.status(400).send("User with same ID or email or contact exists"))
+                } else if (error == null) {
+                    resolve(res.send({ message: 'New user created successfully!!!' }))
                 }
-            }
-        });
+            });
+        }).catch(() => {
+            console.log("Post - catch block")
+        })
     }
 }
 
