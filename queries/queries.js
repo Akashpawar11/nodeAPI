@@ -1,4 +1,4 @@
-const queries = {
+module.exports = {
     view_all: 'SELECT * FROM users',
     view_particular: 'SELECT * FROM users where id=?',
     post_user: "INSERT INTO users values (?,?,?,?,?) ",
@@ -6,5 +6,3 @@ const queries = {
     delete_user: 'DELETE FROM users WHERE id = ?',
     delete_all: 'DELETE FROM users'
 }
-
-module.exports = queries;
